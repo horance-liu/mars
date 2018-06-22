@@ -1,0 +1,10 @@
+# cmake
+build/
+
+# eclipse
+.settings/
+.project
+.cproject
+
+# vi
+*.swp
