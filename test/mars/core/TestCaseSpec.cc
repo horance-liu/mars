@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "mars/core/TestCase.h"
+#include "mars/core/TestResult.h"
 
 namespace {
   struct AdditionTest : TestCase {
@@ -20,12 +21,21 @@ namespace {
     int* base = nullptr;
   };
 
-  void run(Test& test) {
-    test.run();
-  }
+  struct TestCaseSpec : testing::Test {
+  protected:
+    void run(::Test& test) {
+      test.run(result);
+    }
+
+  protected:
+    TestResult result;
+  };
+
 }
 
-TEST(AdditionTest, sum_of_two_integers) {
+TEST_F(TestCaseSpec, sum_of_two_integers) {
   AdditionTest test;
   run(test);
+
+  ASSERT_EQ(1, result.runCount());
 }

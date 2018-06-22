@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "mars/core/TestCase.h"
 #include "mars/core/TestSuite.h"
+#include "mars/core/TestResult.h"
 
 namespace {
   static int num = 0;
@@ -27,15 +28,18 @@ namespace {
     int base = 10;
   };
 
-  void run(Test& test) {
-    test.run();
-  }
-
   struct TestSuiteSpec : testing::Test {
+    void run(::Test& test) {
+      test.run(result);
+    }
+
   private:
     void SetUp() override {
       num = 0;
     }
+
+  protected:
+    TestResult result;
   };
 }
 
@@ -46,7 +50,7 @@ TEST_F(TestSuiteSpec, run_multi_test_cases_using_test_suite) {
 
   run(suite);
 
-  ASSERT_EQ(2, num);
+  ASSERT_EQ(2, result.runCount());
 }
 
 TEST_F(TestSuiteSpec, package_test_suite_into_another_test_suite) {
@@ -59,5 +63,5 @@ TEST_F(TestSuiteSpec, package_test_suite_into_another_test_suite) {
 
   run(outter);
 
-  ASSERT_EQ(2, num);
+  ASSERT_EQ(2, result.runCount());
 }

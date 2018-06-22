@@ -17,8 +17,8 @@ TestSuite::~TestSuite() {
   });
 }
 
-void TestSuite::run() {
-  foreach([](Test* test) {
-    test->run();
+void TestSuite::run(TestResult& result) {
+  foreach([&result](Test* test) {
+    test->run(result);
   });
 }

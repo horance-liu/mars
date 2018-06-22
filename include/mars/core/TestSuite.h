@@ -10,7 +10,7 @@ struct TestSuite : Test {
   void add(Test* test);
 
 private:
-  void run() override;
+  void run(TestResult& result) override;
 
 private:
   template <typename F>

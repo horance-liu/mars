@@ -5,7 +5,7 @@
 
 struct TestCase : Test {
 private:
-  void run() override;
+  void run(TestResult& result) override;
 
 private:
   virtual void setUp() {}
