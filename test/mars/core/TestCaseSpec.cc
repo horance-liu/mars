@@ -3,17 +3,25 @@
 
 namespace {
   struct AdditionTest : TestCase {
-    void run() override {
-      ASSERT_EQ(2, 1 + 1);
+  private:
+    void setUp() override {
+      base = new int(10);
     }
-  };
 
-  void run(TestCase& test) {
-    test.run();
-  }
+    void runTest() override {
+      ASSERT_EQ(20, *base + 10);
+    }
+
+    void tearDown() override {
+      delete base;
+    }
+
+  private:
+    int* base = nullptr;
+  };
 }
 
 TEST(AdditionTest, sum_of_two_integers) {
   AdditionTest test;
-  run(test);
+  test.run();
 }
