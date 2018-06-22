@@ -19,9 +19,13 @@ namespace {
   private:
     int* base = nullptr;
   };
+
+  void run(Test& test) {
+    test.run();
+  }
 }
 
 TEST(AdditionTest, sum_of_two_integers) {
   AdditionTest test;
-  test.run();
+  run(test);
 }
