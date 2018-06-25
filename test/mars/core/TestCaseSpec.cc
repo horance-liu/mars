@@ -3,22 +3,23 @@
 #include "mars/core/TestResult.h"
 
 namespace {
-  struct AdditionTest : TestCase {
+  struct SimpleTest : TestCase {
+    bool wasSetUp = false;
+    bool wasRun = false;
+    bool wasTearDown = false;
+
   private:
     void setUp() override {
-      base = new int(10);
+      wasSetUp = true;
     }
 
     void runTest() override {
-      ASSERT_EQ(20, *base + 10);
+      wasRun = true;
     }
 
     void tearDown() override {
-      delete base;
+      wasTearDown = true;
     }
-
-  private:
-    int* base = nullptr;
   };
 
   struct TestCaseSpec : testing::Test {
@@ -33,9 +34,11 @@ namespace {
 
 }
 
-TEST_F(TestCaseSpec, sum_of_two_integers) {
-  AdditionTest test;
+TEST_F(TestCaseSpec, make_sure_test_case_can_run_normally) {
+  SimpleTest test;
   run(test);
 
-  ASSERT_EQ(1, result.runCount());
+  ASSERT_TRUE(test.wasSetUp);
+  ASSERT_TRUE(test.wasRun);
+  ASSERT_TRUE(test.wasTearDown);
 }

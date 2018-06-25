@@ -4,20 +4,6 @@
 #include "mars/core/TestResult.h"
 
 namespace {
-  struct AdditionTest : TestCase {
-  private:
-    void runTest() override {
-      ASSERT_EQ(20, 10 + 10);
-    }
-  };
-
-  struct SubtractionTest : TestCase {
-  private:
-    void runTest() override {
-      ASSERT_EQ(0, 10 - 10);
-    }
-  };
-
   struct TestSuiteSpec : testing::Test {
     void run(::Test& test) {
       test.run(result);
@@ -30,8 +16,8 @@ namespace {
 
 TEST_F(TestSuiteSpec, run_multi_test_cases_using_test_suite) {
   TestSuite suite;
-  suite.add(new AdditionTest);
-  suite.add(new SubtractionTest);
+  suite.add(new TestCase);
+  suite.add(new TestCase);
 
   run(suite);
 
@@ -39,11 +25,11 @@ TEST_F(TestSuiteSpec, run_multi_test_cases_using_test_suite) {
 }
 
 TEST_F(TestSuiteSpec, package_test_suite_into_another_test_suite) {
-  TestSuite *inner = new TestSuite;
-  inner->add(new AdditionTest);
+  auto inner = new TestSuite;
+  inner->add(new TestCase);
 
   TestSuite outter;
-  outter.add(new SubtractionTest);
+  outter.add(new TestCase);
   outter.add(inner);
 
   run(outter);
