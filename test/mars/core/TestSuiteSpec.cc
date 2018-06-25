@@ -4,38 +4,23 @@
 #include "mars/core/TestResult.h"
 
 namespace {
-  static int num = 0;
-
   struct AdditionTest : TestCase {
   private:
     void runTest() override {
-      num++;
-      ASSERT_EQ(20, base + 10);
+      ASSERT_EQ(20, 10 + 10);
     }
-
-  private:
-    int base = 10;
   };
 
   struct SubtractionTest : TestCase {
   private:
     void runTest() override {
-      num++;
-      ASSERT_EQ(0, base - 10);
+      ASSERT_EQ(0, 10 - 10);
     }
-
-  private:
-    int base = 10;
   };
 
   struct TestSuiteSpec : testing::Test {
     void run(::Test& test) {
       test.run(result);
-    }
-
-  private:
-    void SetUp() override {
-      num = 0;
     }
 
   protected:

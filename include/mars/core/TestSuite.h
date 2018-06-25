@@ -14,7 +14,7 @@ private:
 
 private:
   template <typename F>
-  void foreach(F f);
+  void foreach(F f) const;
 
 private:
   std::vector<Test*> tests;

@@ -2,8 +2,13 @@
 #define INCLUDE_MARS_CORE_TESTRESULT_H_
 
 struct TestResult {
-  int runCount() const;
+  TestResult();
 
+  int runCount() const;
+  void run();
+
+private:
+  int runTests;
 };
 
 #endif
