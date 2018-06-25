@@ -4,6 +4,9 @@
 #include "mars/core/Test.h"
 
 struct TestCase : Test {
+
+  void runBare();
+
 private:
   void run(TestResult& result) override;
 

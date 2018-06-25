@@ -10,3 +10,7 @@ int TestResult::runCount() const {
 void TestResult::run() {
   runTests++;
 }
+
+int TestResult::failureCount() const {
+  return failures.size();
+}

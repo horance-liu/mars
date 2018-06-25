@@ -1,6 +1,20 @@
 #include <gtest/gtest.h>
 #include "mars/core/TestCase.h"
 #include "mars/core/TestResult.h"
+#include "mars/core/AssertionFailedError.h"
+
+namespace {
+  struct TestCaseSpec : testing::Test {
+  protected:
+    void run(::Test& test) {
+      test.run(result);
+    }
+
+  protected:
+    TestResult result;
+  };
+
+}
 
 namespace {
   struct SimpleTest : TestCase {
@@ -21,17 +35,6 @@ namespace {
       wasTearDown = true;
     }
   };
-
-  struct TestCaseSpec : testing::Test {
-  protected:
-    void run(::Test& test) {
-      test.run(result);
-    }
-
-  protected:
-    TestResult result;
-  };
-
 }
 
 TEST_F(TestCaseSpec, make_sure_test_case_can_run_normally) {
@@ -41,4 +44,23 @@ TEST_F(TestCaseSpec, make_sure_test_case_can_run_normally) {
   ASSERT_TRUE(test.wasSetUp);
   ASSERT_TRUE(test.wasRun);
   ASSERT_TRUE(test.wasTearDown);
+  ASSERT_EQ(1, result.runCount());
+}
+
+namespace {
+  struct FailedTest : TestCase {
+    bool wasSetUp = false;
+
+  private:
+    void runTest() override {
+      throw AssertionFailedError("test.cpp:12", "expected value == 2, but got 3");
+    }
+  };
+}
+
+TEST_F(TestCaseSpec, test_case_assert_failed_and_throw_assertion_failed_error) {
+  FailedTest test;
+  run(test);
+
+  ASSERT_EQ(1, result.failureCount());
 }
