@@ -6,6 +6,9 @@
 
 namespace {
   struct TestCaseSpec : testing::Test {
+    TestCaseSpec() : collector(result) {
+    }
+
   protected:
     void run(::Test& test) {
       test.run(result);
@@ -13,6 +16,7 @@ namespace {
 
   protected:
     TestResult result;
+    TestCollector& collector;
   };
 
 }
@@ -45,7 +49,7 @@ TEST_F(TestCaseSpec, make_sure_test_case_can_run_normally) {
   ASSERT_TRUE(test.wasSetUp);
   ASSERT_TRUE(test.wasRun);
   ASSERT_TRUE(test.wasTearDown);
-  ASSERT_EQ(1, result.runCount());
+  ASSERT_EQ(1, collector.runCount());
 }
 
 namespace {
@@ -67,8 +71,8 @@ TEST_F(TestCaseSpec, throw_assertion_error_on_run_test) {
   run(test);
 
   ASSERT_TRUE(test.wasTearDown);
-  ASSERT_EQ(1, result.failureCount());
-  ASSERT_EQ(0, result.errorCount());
+  ASSERT_EQ(1, collector.failureCount());
+  ASSERT_EQ(0, collector.errorCount());
 }
 
 namespace {
@@ -90,8 +94,8 @@ TEST_F(TestCaseSpec, throw_assertion_error_on_setup) {
   run(test);
 
   ASSERT_FALSE(test.wasRun);
-  ASSERT_EQ(1, result.failureCount());
-  ASSERT_EQ(0, result.errorCount());
+  ASSERT_EQ(1, collector.failureCount());
+  ASSERT_EQ(0, collector.errorCount());
 }
 
 namespace {
@@ -106,8 +110,8 @@ TEST_F(TestCaseSpec, throw_assertion_error_on_tear_down) {
   AssertionFailedOnTearDownTest test;
   run(test);
 
-  ASSERT_EQ(1, result.failureCount());
-  ASSERT_EQ(0, result.errorCount());
+  ASSERT_EQ(1, collector.failureCount());
+  ASSERT_EQ(0, collector.errorCount());
 }
 
 namespace {
@@ -122,8 +126,8 @@ TEST_F(TestCaseSpec, throw_std_exception_on_run_test) {
   StdExceptionTest test;
   run(test);
 
-  ASSERT_EQ(0, result.failureCount());
-  ASSERT_EQ(1, result.errorCount());
+  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(1, collector.errorCount());
 }
 
 namespace {
@@ -138,8 +142,8 @@ TEST_F(TestCaseSpec, throw_std_exception_on_setup) {
   StdExceptionOnSetUpTest test;
   run(test);
 
-  ASSERT_EQ(0, result.failureCount());
-  ASSERT_EQ(1, result.errorCount());
+  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(1, collector.errorCount());
 }
 
 namespace {
@@ -154,8 +158,8 @@ TEST_F(TestCaseSpec, throw_std_exception_on_tear_down) {
   StdExceptionOnTearDownTest test;
   run(test);
 
-  ASSERT_EQ(0, result.failureCount());
-  ASSERT_EQ(1, result.errorCount());
+  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(1, collector.errorCount());
 }
 
 namespace {
@@ -170,8 +174,8 @@ TEST_F(TestCaseSpec, throw_unknown_exception_on_run_test) {
   UnknownExceptionTest test;
   run(test);
 
-  ASSERT_EQ(0, result.failureCount());
-  ASSERT_EQ(1, result.errorCount());
+  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(1, collector.errorCount());
 }
 
 namespace {
@@ -186,8 +190,8 @@ TEST_F(TestCaseSpec, throw_unknown_exception_on_setup) {
   UnknownExceptionOnSetUpTest test;
   run(test);
 
-  ASSERT_EQ(0, result.failureCount());
-  ASSERT_EQ(1, result.errorCount());
+  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(1, collector.errorCount());
 }
 
 namespace {
@@ -202,6 +206,6 @@ TEST_F(TestCaseSpec, throw_unknown_exception_on_tear_down) {
   UnknownExceptionOnTearDownTest test;
   run(test);
 
-  ASSERT_EQ(0, result.failureCount());
-  ASSERT_EQ(1, result.errorCount());
+  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(1, collector.errorCount());
 }

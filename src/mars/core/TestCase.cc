@@ -1,59 +1,51 @@
 #include "mars/core/TestCase.h"
 #include "mars/core/TestResult.h"
-#include "mars/except/AssertionError.h"
-#include "mars/except/TestFailure.h"
+#include "mars/core/Protectable.h"
+#include "mars/core/TestFunctor.h"
 
 TestCase::TestCase(const std::string& name) : name(name) {
 }
 
-TestFailure* TestCase::failure(const std::string& msg) {
-  return new TestFailure(name, msg, true);
+const std::string& TestCase::getName() const {
+  return name;
 }
 
-TestFailure* TestCase::error(const std::string& msg) {
-  return new TestFailure(name, msg, false);
+void TestCase::run(TestCollector& collector) {
+  collector.runTestCase(*this);
 }
 
+struct TestCase::Functor : TestFunctor {
+  using Method = void(TestCase::*)();
 
-void TestCase::runBare(TestResult& result) {
-  auto ready = true;
-  try {
-    setUp();
-  } catch (const AssertionError& e) {
-    result.addFailure(failure(std::string("assertion fail in setUp\n") + e.what()));
-    ready = false;
-  } catch (const std::exception& e) {
-    result.addFailure(error(std::string("uncaught std::exception in setUp\n") + e.what()));
-    ready = false;
-  } catch (...) {
-    result.addFailure(error(std::string("unknown exception in setUp\n")));
-    ready = false;
+  Functor(TestCase& test, Method method)
+    : test(test), method(method) {
   }
 
-  if (ready) {
-    try {
-      runTest();
-    } catch (const AssertionError& e) {
-      result.addFailure(failure(std::string("assertion fail in runTest\n") + e.what()));
-    } catch (const std::exception& e) {
-      result.addFailure(error(std::string("uncaught std::exception in runTest\n") + e.what()));
-    } catch (...) {
-      result.addFailure(error(std::string("unknown exception in runTest\n")));
-    }
+private:
+  const std::string& getTestName() const override {
+    return test.getName();
   }
 
-  try {
-    tearDown();
-  } catch (const AssertionError& e) {
-    result.addFailure(failure(std::string("assertion fail in tearDown\n") + e.what()));
-  } catch (const std::exception& e) {
-    result.addFailure(error(std::string("uncaught std::exception in tearDown\n") + e.what()));
-  } catch (...) {
-    result.addFailure(error(std::string("unknown exception in tearDown\n")));
+  bool operator()() const override {
+    (test.*method)();
+    return true;
   }
+
+private:
+  TestCase& test;
+  Method method;
+};
+
+const Test& TestCase::get() const {
+  return *this;
 }
 
-void TestCase::run(TestResult& result) {
-  result.run();
-  runBare(result);
+#define PROTECT(method) \
+    p.protect(Functor(*this, &TestCase::method), " in the "#method)
+
+void TestCase::runBare(Protectable& p) {
+  if (PROTECT(setUp)) {
+    PROTECT(runTest);
+  }
+  PROTECT(tearDown);
 }

@@ -4,30 +4,41 @@
 #include <vector>
 #include <string>
 
-struct TestFailure;
-struct TestFailureOp;
+#include "mars/core/TestCollector.h"
+#include "mars/core/Protectable.h"
 
-struct TestResult {
-  TestResult();
+struct Test;
+struct BareTestCase;
+struct BareTestSuite;
+struct TestFailure;
+struct TestListener;
+
+struct TestResult : TestCollector, private Protectable {
+  TestResult(TestListener* = nullptr);
   ~TestResult();
 
-  void run();
+private:
+  int runCount() const override;
+  int failureCount() const override;
+  int errorCount() const override;
+  void listFailures(const TestFailureOp&) const override;
 
-  int runCount() const;
-  int failureCount() const;
-  int errorCount() const;
+  void runRootTest(Test&) override;
+  void runTestCase(BareTestCase&) override;
+  void runTestSuite(BareTestSuite&) override;
 
+private:
+  bool protect(const TestFunctor& f, const char* where) override;
+
+private:
   void addFailure(TestFailure*);
 
   template <typename F>
-  void listFailures(F f) const {
-    for (auto failure : failures) {
-      f(failure);
-    }
-  }
+  void foreachFailures(F f) const;
 
 private:
   int runTests;
+  TestListener& listener;
   std::vector<TestFailure*> failures;
 };
 

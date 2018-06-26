@@ -1,8 +1,7 @@
 #include "mars/core/TestSuite.h"
 #include "mars/core/TestResult.h"
 
-void TestSuite::add(Test* test) {
-  tests.push_back(test);
+TestSuite::TestSuite(const std::string& name) : name(name) {
 }
 
 template <typename F>
@@ -18,7 +17,23 @@ TestSuite::~TestSuite() {
   });
 }
 
-void TestSuite::run(TestResult& result) {
+void TestSuite::add(Test* test) {
+  tests.push_back(test);
+}
+
+const std::string& TestSuite::getName() const {
+  return name;
+}
+
+void TestSuite::run(TestCollector& collector) {
+  collector.runTestSuite(*this);
+}
+
+const Test& TestSuite::get() const {
+  return *this;
+}
+
+void TestSuite::runBare(TestResult& result) {
   foreach([&result](Test* test) {
     test->run(result);
   });

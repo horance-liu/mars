@@ -5,12 +5,16 @@
 
 namespace {
   struct TestSuiteSpec : testing::Test {
+    TestSuiteSpec() : collector(result) {
+    }
+
     void run(::Test& test) {
       test.run(result);
     }
 
   protected:
     TestResult result;
+    TestCollector& collector;
   };
 }
 
@@ -21,7 +25,7 @@ TEST_F(TestSuiteSpec, run_multi_test_cases_using_test_suite) {
 
   run(suite);
 
-  ASSERT_EQ(2, result.runCount());
+  ASSERT_EQ(2, collector.runCount());
 }
 
 TEST_F(TestSuiteSpec, package_test_suite_into_another_test_suite) {
@@ -34,5 +38,5 @@ TEST_F(TestSuiteSpec, package_test_suite_into_another_test_suite) {
 
   run(outter);
 
-  ASSERT_EQ(2, result.runCount());
+  ASSERT_EQ(2, collector.runCount());
 }

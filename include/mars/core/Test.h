@@ -1,11 +1,14 @@
 #ifndef UUID_CBABF60A_A645_46EC_8402_6E559233E074
 #define UUID_CBABF60A_A645_46EC_8402_6E559233E074
 
-struct TestResult;
+#include <string>
+
+struct TestCollector;
 
 struct Test {
   virtual ~Test() {}
-  virtual void run(TestResult& result) = 0;
+  virtual const std::string& getName() const = 0;
+  virtual void run(TestCollector&) = 0;
 };
 
 #endif
