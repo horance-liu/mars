@@ -9,6 +9,7 @@ struct TestFailure {
   const std::string& getTestName() const;
   const std::string& getExceptionMsg() const;
   bool isFailure() const;
+  bool isError() const;
 
 private:
   std::string name;

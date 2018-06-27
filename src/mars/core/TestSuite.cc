@@ -25,8 +25,12 @@ const std::string& TestSuite::getName() const {
   return name;
 }
 
-void TestSuite::run(TestCollector& collector) {
-  collector.runTestSuite(*this);
+int TestSuite::countTestCases() const {
+  return tests.size();
+}
+
+void TestSuite::run(TestResult& result) {
+  result.runTestSuite(*this);
 }
 
 const Test& TestSuite::get() const {

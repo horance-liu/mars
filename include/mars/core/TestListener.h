@@ -2,14 +2,13 @@
 #define INCLUDE_MARS_CORE_TESTLISTENER_H_
 
 struct Test;
-struct TestResult;
 struct TestFailure;
 
 struct TestListener {
   virtual ~TestListener() {}
 
-  virtual void startTestRun(const Test&, const TestResult&) {}
-  virtual void endTestRun(const Test&, const TestResult&) {}
+  virtual void startTestRun(const Test&) {}
+  virtual void endTestRun(const Test&) {}
 
   virtual void startTestSuite(const Test&) {}
   virtual void endTestSuite(const Test&) {}

@@ -2,30 +2,22 @@
 #define INCLUDE_MARS_CORE_TESTRESULT_H_
 
 #include <vector>
-#include <string>
-
-#include "mars/core/TestCollector.h"
-#include "mars/core/Protectable.h"
+#include "mars/core/TestListener.h"
+#include "mars/core/internal/Protectable.h"
 
 struct Test;
 struct BareTestCase;
 struct BareTestSuite;
 struct TestFailure;
-struct TestListener;
 
-struct TestResult : TestCollector, private Protectable {
-  TestResult(TestListener* = nullptr);
+struct TestResult : private Protectable {
   ~TestResult();
 
-private:
-  int runCount() const override;
-  int failureCount() const override;
-  int errorCount() const override;
-  void listFailures(const TestFailureOp&) const override;
+  void addListener(TestListener*);
 
-  void runRootTest(Test&) override;
-  void runTestCase(BareTestCase&) override;
-  void runTestSuite(BareTestSuite&) override;
+  void runRootTest(Test&);
+  void runTestCase(BareTestCase&);
+  void runTestSuite(BareTestSuite&);
 
 private:
   bool protect(const TestFunctor& f, const char* where) override;
@@ -33,12 +25,8 @@ private:
 private:
   void addFailure(TestFailure*);
 
-  template <typename F>
-  void foreachFailures(F f) const;
-
 private:
-  int runTests;
-  TestListener& listener;
+  std::vector<TestListener*> listeners;
   std::vector<TestFailure*> failures;
 };
 

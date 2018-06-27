@@ -1,12 +1,14 @@
 #include <gtest/gtest.h>
-
 #include "mars/core/TestCase.h"
 #include "mars/core/TestResult.h"
 #include "mars/except/AssertionError.h"
+#include "mars/listener/collector/TestCollector.h"
 
 namespace {
   struct TestCaseSpec : testing::Test {
-    TestCaseSpec() : collector(result) {
+  private:
+    void SetUp() override {
+      result.addListener(&collector);
     }
 
   protected:
@@ -15,8 +17,8 @@ namespace {
     }
 
   protected:
+    TestCollector collector;
     TestResult result;
-    TestCollector& collector;
   };
 
 }
@@ -71,7 +73,7 @@ TEST_F(TestCaseSpec, throw_assertion_error_on_run_test) {
   run(test);
 
   ASSERT_TRUE(test.wasTearDown);
-  ASSERT_EQ(1, collector.failureCount());
+  ASSERT_EQ(1, collector.failCount());
   ASSERT_EQ(0, collector.errorCount());
 }
 
@@ -94,7 +96,7 @@ TEST_F(TestCaseSpec, throw_assertion_error_on_setup) {
   run(test);
 
   ASSERT_FALSE(test.wasRun);
-  ASSERT_EQ(1, collector.failureCount());
+  ASSERT_EQ(1, collector.failCount());
   ASSERT_EQ(0, collector.errorCount());
 }
 
@@ -110,7 +112,7 @@ TEST_F(TestCaseSpec, throw_assertion_error_on_tear_down) {
   AssertionFailedOnTearDownTest test;
   run(test);
 
-  ASSERT_EQ(1, collector.failureCount());
+  ASSERT_EQ(1, collector.failCount());
   ASSERT_EQ(0, collector.errorCount());
 }
 
@@ -126,7 +128,7 @@ TEST_F(TestCaseSpec, throw_std_exception_on_run_test) {
   StdExceptionTest test;
   run(test);
 
-  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(0, collector.failCount());
   ASSERT_EQ(1, collector.errorCount());
 }
 
@@ -142,7 +144,7 @@ TEST_F(TestCaseSpec, throw_std_exception_on_setup) {
   StdExceptionOnSetUpTest test;
   run(test);
 
-  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(0, collector.failCount());
   ASSERT_EQ(1, collector.errorCount());
 }
 
@@ -158,7 +160,7 @@ TEST_F(TestCaseSpec, throw_std_exception_on_tear_down) {
   StdExceptionOnTearDownTest test;
   run(test);
 
-  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(0, collector.failCount());
   ASSERT_EQ(1, collector.errorCount());
 }
 
@@ -174,7 +176,7 @@ TEST_F(TestCaseSpec, throw_unknown_exception_on_run_test) {
   UnknownExceptionTest test;
   run(test);
 
-  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(0, collector.failCount());
   ASSERT_EQ(1, collector.errorCount());
 }
 
@@ -190,7 +192,7 @@ TEST_F(TestCaseSpec, throw_unknown_exception_on_setup) {
   UnknownExceptionOnSetUpTest test;
   run(test);
 
-  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(0, collector.failCount());
   ASSERT_EQ(1, collector.errorCount());
 }
 
@@ -206,6 +208,6 @@ TEST_F(TestCaseSpec, throw_unknown_exception_on_tear_down) {
   UnknownExceptionOnTearDownTest test;
   run(test);
 
-  ASSERT_EQ(0, collector.failureCount());
+  ASSERT_EQ(0, collector.failCount());
   ASSERT_EQ(1, collector.errorCount());
 }

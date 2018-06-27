@@ -1,93 +1,45 @@
 #include "mars/core/TestResult.h"
-#include "mars/core/BareTestCase.h"
-#include "mars/core/BareTestSuite.h"
 #include "mars/core/Test.h"
-#include "mars/core/TestFunctor.h"
-#include "mars/core/TestListener.h"
-#include "mars/except/TestFailure.h"
-#include "mars/except/TestFailureOp.h"
 #include "mars/except/AssertionError.h"
-
-namespace {
-  TestListener& ref(TestListener* listener) {
-    return listener != nullptr ? *listener : TestListener::none();
-  }
-}
-
-TestResult::TestResult(TestListener* listener)
-  : runTests(0), listener(ref(listener)) {
-}
-
-void TestResult::listFailures(const TestFailureOp& op) const {
-  for (auto f : failures) {
-    op(f);
-  }
-}
-
-template <typename F>
-void TestResult::foreachFailures(F f) const {
-  struct Op : TestFailureOp {
-    explicit Op(F f) : f(f) {}
-
-  private:
-    void operator()(TestFailure* failure) const override {
-      f(failure);
-    }
-
-  private:
-    F f;
-  } op(f);
-
-  listFailures(op);
-}
+#include "mars/except/TestFailure.h"
+#include "mars/core/internal/BareTestCase.h"
+#include "mars/core/internal/BareTestSuite.h"
+#include "mars/core/internal/TestFunctor.h"
 
 TestResult::~TestResult() {
-  foreachFailures([](auto f){
+  for (auto f : failures) {
     delete f;
-  });
+  }
 }
 
-int TestResult::runCount() const {
-  return runTests;
+void TestResult::addListener(TestListener* listener) {
+  listeners.push_back(listener);
 }
+
+
+#define BOARDCAST(action) for (auto listener : listeners) listener->action
 
 void TestResult::runRootTest(Test& test) {
-  listener.startTestRun(test, *this);
+  BOARDCAST(startTestRun(test));
   test.run(*this);
-  listener.endTestRun(test, *this);
+  BOARDCAST(endTestRun(test));
 }
 
 void TestResult::runTestCase(BareTestCase& test) {
-  runTests++;
-  listener.startTestCase(test.get());
+  BOARDCAST(startTestCase(test.get()));
   test.runBare(*this);
-  listener.endTestCase(test.get());
+  BOARDCAST(endTestCase(test.get()));
 }
 
 void TestResult::runTestSuite(BareTestSuite& test) {
-  listener.startTestSuite(test.get());
+  BOARDCAST(startTestSuite(test.get()));
   test.runBare(*this);
-  listener.startTestSuite(test.get());
+  BOARDCAST(startTestSuite(test.get()));
 }
 
 void TestResult::addFailure(TestFailure* f) {
   failures.push_back(f);
-}
-
-int TestResult::failureCount() const {
-  auto num = 0;
-  foreachFailures([&num](auto f) {
-    if (f->isFailure()) num++;
-  });
-  return num;
-}
-
-int TestResult::errorCount() const {
-  auto num = 0;
-  foreachFailures([&num](auto f) {
-    if (!f->isFailure()) num++;
-  });
-  return num;
+  BOARDCAST(addFailure(*f));
 }
 
 namespace {

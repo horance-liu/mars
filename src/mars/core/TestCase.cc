@@ -1,7 +1,7 @@
 #include "mars/core/TestCase.h"
 #include "mars/core/TestResult.h"
-#include "mars/core/Protectable.h"
-#include "mars/core/TestFunctor.h"
+#include "mars/core/internal/Protectable.h"
+#include "mars/core/internal/TestFunctor.h"
 
 TestCase::TestCase(const std::string& name) : name(name) {
 }
@@ -10,35 +10,39 @@ const std::string& TestCase::getName() const {
   return name;
 }
 
-void TestCase::run(TestCollector& collector) {
-  collector.runTestCase(*this);
+int TestCase::countTestCases() const {
+  return 1;
+}
+
+void TestCase::run(TestResult& result) {
+  result.runTestCase(*this);
+}
+
+const Test& TestCase::get() const {
+  return *this;
 }
 
 struct TestCase::Functor : TestFunctor {
   using Method = void(TestCase::*)();
 
-  Functor(TestCase& test, Method method)
-    : test(test), method(method) {
+  Functor(TestCase& self, Method method)
+    : self(self), method(method) {
   }
 
 private:
   const std::string& getTestName() const override {
-    return test.getName();
+    return self.getName();
   }
 
   bool operator()() const override {
-    (test.*method)();
+    (self.*method)();
     return true;
   }
 
 private:
-  TestCase& test;
+  TestCase& self;
   Method method;
 };
-
-const Test& TestCase::get() const {
-  return *this;
-}
 
 #define PROTECT(method) \
     p.protect(Functor(*this, &TestCase::method), " in the "#method)

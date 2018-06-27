@@ -2,19 +2,23 @@
 #include "mars/core/TestCase.h"
 #include "mars/core/TestSuite.h"
 #include "mars/core/TestResult.h"
+#include "mars/listener/collector/TestCollector.h"
 
 namespace {
   struct TestSuiteSpec : testing::Test {
-    TestSuiteSpec() : collector(result) {
+  private:
+    void SetUp() override {
+      result.addListener(&collector);
     }
 
+  protected:
     void run(::Test& test) {
       test.run(result);
     }
 
   protected:
+    TestCollector collector;
     TestResult result;
-    TestCollector& collector;
   };
 }
 

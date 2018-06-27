@@ -16,3 +16,7 @@ const std::string& TestFailure::getExceptionMsg() const {
 bool TestFailure::isFailure() const {
   return failure;
 }
+
+bool TestFailure::isError() const {
+  return !failure;
+}

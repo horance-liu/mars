@@ -3,12 +3,14 @@
 
 #include <string>
 
-struct TestCollector;
+struct TestResult;
 
 struct Test {
   virtual ~Test() {}
+
   virtual const std::string& getName() const = 0;
-  virtual void run(TestCollector&) = 0;
+  virtual int countTestCases() const = 0;
+  virtual void run(TestResult&) = 0;
 };
 
 #endif

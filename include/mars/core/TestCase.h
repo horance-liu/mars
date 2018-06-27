@@ -1,10 +1,8 @@
 #ifndef UUID_A5E84C94_CA28_4032_8014_2762BCE2D88F
 #define UUID_A5E84C94_CA28_4032_8014_2762BCE2D88F
 
-#include <string>
-
-#include "mars/core/BareTestCase.h"
 #include "mars/core/Test.h"
+#include "mars/core/internal/BareTestCase.h"
 
 struct TestFailure;
 
@@ -13,7 +11,8 @@ struct TestCase : Test, private BareTestCase {
 
 private:
   const std::string& getName() const override;
-  void run(TestCollector&) override;
+  int countTestCases() const override;
+  void run(TestResult&) override;
 
 private:
   const Test& get() const override;
