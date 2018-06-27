@@ -29,7 +29,7 @@ private:
 private:
   void onTestSucc();
   void onTestFail();
-  void onSuite(const Test& test, const std::string& newline);
+  void onSuite(const Test&, char newline = '\0');
 
   void listFailures() const;
 

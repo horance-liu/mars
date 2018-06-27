@@ -7,7 +7,7 @@
 #include <sstream>
 
 ColorfulPrinter::ColorfulPrinter(std::ostream& out)
-  : out(out), lastFailed(false) {
+  : out(out), lastFailed(false), clock(out) {
 }
 
 void ColorfulPrinter::startTestRun(const Test& test) {
@@ -87,20 +87,25 @@ void ColorfulPrinter::endTestCase(const Test& test) {
   clock.endTestCase(test);
 }
 
-void ColorfulPrinter::onSuite(const Test& test, const std::string& nl) {
+void ColorfulPrinter::onSuite(const Test& test, char nl) {
   if (test.getName() == "All Tests")
     return;
 
-  out << GREEN << nl << "[----------] " << WHITE << test.countTestCases()
-      << " tests from " << test.getName() << std::endl;
+  out << GREEN << "[----------] "
+      << WHITE << test.countTestCases()
+               << " tests from "
+               << test.getName()
+               << std::endl;
 }
 
 void ColorfulPrinter::startTestSuite(const Test& test) {
-  onSuite(test, "\n");
+  out << std::endl;
+  onSuite(test);
 }
 
 void ColorfulPrinter::endTestSuite(const Test& test) {
-  onSuite(test, "");
+  onSuite(test);
+  out << std::endl;
 }
 
 void ColorfulPrinter::addFailure(const TestFailure& fail) {

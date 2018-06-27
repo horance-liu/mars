@@ -17,13 +17,25 @@ namespace {
     ColorfulPrinter printer;
     TestResult result;
   };
+
+  namespace {
+    struct AssertionFailedTest : TestCase {
+      using TestCase::TestCase;
+
+      void runTest() override {
+        throw AssertionError("test.cpp:57", "expected value == 2, but got 3");
+      }
+    };
+  }
 }
 
 TEST_F(ColorfulPrinterSpec, print_colorful_test_report) {
   TestSuite suite("suite");
-  suite.add(new TestCase("1"));
-  suite.add(new TestCase("2"));
-  suite.add(new TestCase("3"));
+  suite.add(new AssertionFailedTest("failed test"));
+  suite.add(new TestCase("succ 2"));
+  suite.add(new TestCase("succ 3"));
 
   result.runRootTest(suite);
 }
+
+

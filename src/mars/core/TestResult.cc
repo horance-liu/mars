@@ -34,7 +34,7 @@ void TestResult::runTestCase(BareTestCase& test) {
 void TestResult::runTestSuite(BareTestSuite& test) {
   BOARDCAST(startTestSuite(test.get()));
   test.runBare(*this);
-  BOARDCAST(startTestSuite(test.get()));
+  BOARDCAST(endTestSuite(test.get()));
 }
 
 void TestResult::addFailure(TestFailure* f) {

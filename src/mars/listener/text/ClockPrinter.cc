@@ -71,6 +71,6 @@ void ClockPrinter::endTestCase(const Test& test) {
   });
 
   auto elapsed = top().elapsed();
-  out << test.getName() << toString(elapsed);
+  out << test.getName() << toString(elapsed) << std::endl;
   collect(elapsed);
 }

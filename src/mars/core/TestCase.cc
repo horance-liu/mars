@@ -45,7 +45,7 @@ private:
 };
 
 #define PROTECT(method) \
-    p.protect(Functor(*this, &TestCase::method), " in the "#method)
+    p.protect(Functor(*this, &TestCase::method), " in the "#method"\n")
 
 void TestCase::runBare(Protectable& p) {
   if (PROTECT(setUp)) {

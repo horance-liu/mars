@@ -26,7 +26,7 @@ int TestCollector::errorCount() const {
 }
 
 int TestCollector::failTotal() const {
-  return failCount() + failTotal();
+  return failCount() + errorCount();
 }
 
 void TestCollector::addFailure(const TestFailure& failure) {
