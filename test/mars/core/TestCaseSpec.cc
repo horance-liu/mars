@@ -20,7 +20,6 @@ namespace {
     TestCollector collector;
     TestResult result;
   };
-
 }
 
 namespace {

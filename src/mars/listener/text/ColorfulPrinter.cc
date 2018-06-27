@@ -49,16 +49,15 @@ void ColorfulPrinter::listFailures() const {
 }
 
 void ColorfulPrinter::endTestRun(const Test& test) {
-  clock.endTestRun(test);
-
   out << GREEN << "[==========] " << WHITE << test.countTestCases()
       << " test cases ran." << std::endl;
 
   status.successful() ? out << GREEN : out << RED;
 
   out << "[  TOTAL   ] " << WHITE << "PASS: " << collector.passCount() << "  "
-      << "FAILURE: " << collector.failCount() << "  " << "ERROR: " << collector.errorCount() << "  "
-      << "TIME: " << format(total) << std::endl;
+      << "FAILURE: " << collector.failCount() << "  " << "ERROR: " << collector.errorCount() << "  ";
+
+  clock.endTestRun(test);
 
   listFailures();
 }

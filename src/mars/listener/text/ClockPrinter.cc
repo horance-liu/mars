@@ -1,6 +1,7 @@
 #include <mars/util/ScopedExit.h>
 #include "mars/listener/text/ClockPrinter.h"
 #include "mars/listener/util/Timer.h"
+#include "mars/core/Test.h"
 #include <sstream>
 
 ClockPrinter::ClockPrinter(std::ostream& out) : out(out) {
@@ -29,7 +30,7 @@ void ClockPrinter::startTestRun(const Test&) {
 }
 
 void ClockPrinter::endTestRun(const Test&) {
-  out << toString(total);
+  out << "TIME: " << format(total) << std::endl;
 }
 
 struct ClockPrinter::TestInfo {
@@ -70,6 +71,6 @@ void ClockPrinter::endTestCase(const Test& test) {
   });
 
   auto elapsed = top().elapsed();
-  out <<  << toString(elapsed);
+  out << test.getName() << toString(elapsed);
   collect(elapsed);
 }

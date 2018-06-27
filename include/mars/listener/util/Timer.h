@@ -4,8 +4,6 @@
 #include <sys/time.h>
 
 struct Timer {
-  Timer();
-
   void start();
   timeval elapsed() const;
 
