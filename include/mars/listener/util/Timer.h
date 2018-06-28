@@ -1,14 +1,14 @@
 #ifndef INCLUDE_MARS_LISTENER_UTIL_TIMER_H_
 #define INCLUDE_MARS_LISTENER_UTIL_TIMER_H_
 
-#include <sys/time.h>
+#include "mars/listener/util/TimeVal.h"
 
 struct Timer {
   void start();
-  timeval elapsed() const;
+  TimeVal elapsed() const;
 
 private:
-  timeval startTime;
+  TimeVal begin;
 };
 
 #endif

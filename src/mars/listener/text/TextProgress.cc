@@ -1,8 +1,8 @@
 #include "mars/listener/text/TextProgress.h"
 #include "mars/except/TestFailure.h"
 
-TextProgress::TextProgress(std::ostream& out)
-  : out(out) {}
+TextProgress::TextProgress(std::ostream& out) : out(out) {
+}
 
 void TextProgress::startTestCase(const Test&) {
   out << '.';
@@ -13,6 +13,6 @@ void TextProgress::addFailure(const TestFailure& failure) {
 }
 
 void TextProgress::endTestRun(const Test&) {
-  out << '\n';
+  out << std::endl;
   out.flush();
 }

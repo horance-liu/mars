@@ -6,7 +6,7 @@ ListAllPrinter::ListAllPrinter(std::ostream& out) : out(out) {
 
 void ListAllPrinter::startTestSuite(const Test& test) {
   if (test.getName() != "All Tests") {
-    out << test.getName() << std::endl;
+    out << test.getName() << ":" << std::endl;
   }
 }
 
@@ -18,5 +18,5 @@ namespace {
 }
 
 void ListAllPrinter::startTestCase(const Test& test) {
-  out << '\t' << shortName(test.getName()) << std::endl;
+  out << "  " << shortName(test.getName()) << std::endl;
 }

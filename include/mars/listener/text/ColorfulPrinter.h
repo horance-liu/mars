@@ -2,17 +2,16 @@
 #define HC1529C5B_742D_4014_BBBF_7533B3E13905
 
 #include <iostream>
-#include <stack>
-#include <time.h>
 #include "mars/listener/collector/FailureLister.h"
 #include "mars/listener/collector/TestCollector.h"
 #include "mars/listener/collector/TestStatus.h"
-#include "mars/listener/text/ClockPrinter.h"
+#include "mars/listener/collector/ClockPrinter.h"
 
 struct TestInfo;
 
 struct ColorfulPrinter : TestListener {
   ColorfulPrinter(std::ostream& = std::cout);
+  ~ColorfulPrinter();
 
 private:
   void startTestRun(const Test&) override;
@@ -27,18 +26,11 @@ private:
   void addFailure(const TestFailure&) override;
 
 private:
-  void onTestSucc();
-  void onTestFail();
-  void onSuite(const Test&, char newline = '\0');
-
-  void listFailures() const;
-
-  std::string toString(const timeval& elapsed) const;
-  void collectTime(const timeval& elapsed);
-
-private:
-  std::ostream& out;
   bool lastFailed;
+  std::ostream& out;
+
+  struct Writer;
+  Writer* writer;
 
   TestStatus status;
   TestCollector collector;
