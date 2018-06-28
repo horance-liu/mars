@@ -3,8 +3,8 @@
 
 struct TestFunctor;
 
-struct Protectable {
-  virtual ~Protectable() {}
+struct TestProtector {
+  virtual ~TestProtector() {}
   virtual bool protect(const TestFunctor& f, const char* where) = 0;
 };
 

@@ -2,15 +2,15 @@
 #define INCLUDE_MARS_CORE_TESTRESULT_H_
 
 #include <vector>
+#include "mars/core/internal/TestProtector.h"
 #include "mars/core/TestListener.h"
-#include "mars/core/internal/Protectable.h"
 
 struct Test;
 struct BareTestCase;
 struct BareTestSuite;
 struct TestFailure;
 
-struct TestResult : private Protectable {
+struct TestResult : private TestProtector {
   ~TestResult();
 
   void addListener(TestListener*);

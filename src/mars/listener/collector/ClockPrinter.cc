@@ -1,5 +1,4 @@
 #include "mars/listener/collector/ClockPrinter.h"
-#include "mars/util/ScopedExit.h"
 #include "mars/listener/util/Timer.h"
 
 struct ClockPrinter::TestInfo {
@@ -33,10 +32,6 @@ void ClockPrinter::startTestCase(const Test&) {
 }
 
 void ClockPrinter::endTestCase(const Test& test) {
-  SCOPED_EXIT([this](){
-    stack.pop();
-  });
-
-  elapsedTime = stack.top().elapsed();
-  totalTime += elapsedTime;
+  totalTime += stack.top().elapsed();
+  stack.pop();
 }

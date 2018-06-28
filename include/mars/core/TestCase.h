@@ -16,7 +16,7 @@ private:
 
 private:
   const Test& get() const override;
-  void runBare(Protectable&) override;
+  void runBare(TestProtector&) override;
 
 private:
   virtual void setUp() {}
@@ -24,12 +24,7 @@ private:
   virtual void tearDown() {}
 
 private:
-  TestFailure* failure(const std::string&);
-  TestFailure* error(const std::string&);
-
   struct Functor;
-
-private:
   std::string name;
 };
 

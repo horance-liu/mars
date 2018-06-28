@@ -1,7 +1,7 @@
 #include "mars/core/TestCase.h"
 #include "mars/core/TestResult.h"
-#include "mars/core/internal/Protectable.h"
 #include "mars/core/internal/TestFunctor.h"
+#include "mars/core/internal/TestProtector.h"
 
 TestCase::TestCase(const std::string& name) : name(name) {
 }
@@ -47,7 +47,7 @@ private:
 #define PROTECT(method) \
     p.protect(Functor(*this, &TestCase::method), " in the "#method"\n")
 
-void TestCase::runBare(Protectable& p) {
+void TestCase::runBare(TestProtector& p) {
   if (PROTECT(setUp)) {
     PROTECT(runTest);
   }
