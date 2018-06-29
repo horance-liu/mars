@@ -3,13 +3,6 @@
 #include "mars/core/internal/TestFunctor.h"
 #include "mars/core/internal/TestProtector.h"
 
-TestCase::TestCase(const std::string& name) : name(name) {
-}
-
-const std::string& TestCase::getName() const {
-  return name;
-}
-
 int TestCase::countTestCases() const {
   return 1;
 }

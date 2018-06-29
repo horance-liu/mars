@@ -1,9 +1,6 @@
 #include "mars/core/TestSuite.h"
 #include "mars/core/TestResult.h"
 
-TestSuite::TestSuite(const std::string& name) : name(name) {
-}
-
 template <typename F>
 inline void TestSuite::foreach(F f) const {
   for (auto test : tests) {
@@ -21,12 +18,12 @@ void TestSuite::add(Test* test) {
   tests.push_back(test);
 }
 
-const std::string& TestSuite::getName() const {
-  return name;
-}
-
 int TestSuite::countTestCases() const {
-  return tests.size();
+  auto num = 0;
+  foreach([&num](Test* test) {
+    num += test->countTestCases();
+  });
+  return num;
 }
 
 void TestSuite::run(TestResult& result) {

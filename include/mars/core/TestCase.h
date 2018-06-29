@@ -4,13 +4,10 @@
 #include "mars/core/Test.h"
 #include "mars/core/internal/BareTestCase.h"
 
-struct TestFailure;
-
 struct TestCase : Test, private BareTestCase {
-  TestCase(const std::string& name = "");
+  using Test::Test;
 
 private:
-  const std::string& getName() const override;
   int countTestCases() const override;
   void run(TestResult&) override;
 
@@ -25,7 +22,6 @@ private:
 
 private:
   struct Functor;
-  std::string name;
 };
 
 #endif

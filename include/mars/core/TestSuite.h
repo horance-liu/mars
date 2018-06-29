@@ -6,13 +6,13 @@
 #include "mars/core/internal/BareTestSuite.h"
 
 struct TestSuite : Test, private BareTestSuite {
-  explicit TestSuite(const std::string& name = "");
+  using Test::Test;
+
   ~TestSuite();
 
   void add(Test* test);
 
 private:
-  const std::string& getName() const override;
   int countTestCases() const override;
   void run(TestResult&) override;
 
@@ -25,7 +25,6 @@ private:
   void foreach(F f) const;
 
 private:
-  std::string name;
   std::vector<Test*> tests;
 };
 

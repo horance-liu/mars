@@ -6,11 +6,16 @@
 struct TestResult;
 
 struct Test {
+  explicit Test(const std::string& name = "");
   virtual ~Test() {}
 
-  virtual const std::string& getName() const = 0;
+  const std::string& getName() const;
+
   virtual int countTestCases() const = 0;
   virtual void run(TestResult&) = 0;
+
+private:
+  std::string name;
 };
 
 #endif
